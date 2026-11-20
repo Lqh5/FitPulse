@@ -148,6 +148,9 @@ FitPulse/
 ## 📖 文档
 
 - [需求分析文档](docs/FitPulse_需求分析文档.md)
+- [PRD 补充说明](docs/FitPulse_PRD补充说明.md)
+- [需求细化说明](docs/FitPulse_需求细化说明.md)
+- [验收标准与用户故事矩阵](docs/FitPulse_验收标准与用户故事矩阵.md)
 - [系统设计说明书](docs/FitPulse_系统设计说明书.md)
 - [数据库设计说明书](docs/FitPulse_数据库设计说明书.md)
 
