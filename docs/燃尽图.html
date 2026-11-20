@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitPulse 燃尽图</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f8f9fa; color: #1a1a2e; padding: 40px; display: flex;
+    justify-content: center; align-items: center; min-height: 100vh;
+  }
+  .chart-card {
+    background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    padding: 40px; max-width: 900px; width: 100%;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 28px; }
+  .legend { display: flex; gap: 24px; margin-bottom: 20px; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .note { margin-top: 16px; font-size: 12px; color: #9ca3af; text-align: center; }
+  canvas { max-height: 420px; }
+</style>
+</head>
+<body>
+<div class="chart-card">
+  <h1>📉 FitPulse 冲刺燃尽图</h1>
+  <p class="subtitle">2026秋软工实践 · 11 个 Issue · 6 周冲刺（Week 10–15）</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#FF6B35"></div> 计划剩余</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3B82F6;border:1px dashed #3B82F6;background:transparent;"></div> 理想燃尽线</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div> 实际剩余</div>
+  </div>
+
+  <canvas id="burndown"></canvas>
+  <p class="note">* 实际剩余将在每周日更新 · 当前日期：2026-11-20（Week 10 中）</p>
+</div>
+
+<script>
+const ctx = document.getElementById('burndown').getContext('2d');
+
+// Weeks and dates
+const labels = [
+  'Week 9\n11.10-11.16',
+  'Week 10\n11.17-11.23',
+  'Week 11\n11.24-11.30',
+  'Week 12\n12.01-12.07',
+  'Week 13\n12.08-12.14',
+  'Week 14\n12.15-12.21',
+  'Week 15\n12.22-12.28'
+];
+
+// Planned remaining issues — burn down 11→6→3→0
+const planned = [11, 6, 3, 0, 0, 0, 0];
+
+// Ideal line: straight line from 11 to 0 across Week 10→12
+const ideal = [11, 7, 3.7, 0, 0, 0, 0];
+
+// Actual remaining (Week 9 actual = 11, rest TBD)
+const actual = [11, null, null, null, null, null, null];
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: '计划剩余',
+        data: planned,
+        borderColor: '#FF6B35',
+        backgroundColor: 'rgba(255,107,53,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 6,
+        pointBackgroundColor: '#FF6B35',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        borderWidth: 2.5,
+      },
+      {
+        label: '理想燃尽线',
+        data: ideal,
+        borderColor: '#3B82F6',
+        borderDash: [6, 4],
+        fill: false,
+        tension: 0,
+        pointRadius: 0,
+        borderWidth: 1.5,
+      },
+      {
+        label: '实际剩余',
+        data: actual,
+        borderColor: '#10B981',
+        backgroundColor: 'rgba(16,185,129,0.06)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 6,
+        pointBackgroundColor: '#10B981',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        borderWidth: 2.5,
+        spanGaps: false,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y} 个 Issue`,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 12,
+        ticks: { stepSize: 2, callback: (v) => v + ' 个' },
+        title: { display: true, text: '剩余 Issue 数', font: { size: 12 } },
+        grid: { color: '#f3f4f6' },
+      },
+      x: {
+        grid: { display: false },
+      },
+    },
+  },
+});
+</script>
+</body>
+</html>
